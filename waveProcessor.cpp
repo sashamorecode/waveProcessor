@@ -4,7 +4,7 @@
 
 #define GETPARAMS(i) GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "%"); \
 GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%"); \
-GetParam(kWaveType##i)->InitEnum("Wave Type", ARCTAN, 12); \
+GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
 GetParam(kWaveType##i)->SetDisplayText(0, "Arctan"); \
 GetParam(kWaveType##i)->SetDisplayText(1, "TANH"); \
 GetParam(kWaveType##i)->SetDisplayText(2, "TANH^3"); \
