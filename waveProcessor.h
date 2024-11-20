@@ -7,6 +7,7 @@ enum EParams
   SHAPE(0),
   SHAPE(1),
   SHAPE(2),
+  kParallel,
   kNumParams
 };
 const int kNumPresets = 1;

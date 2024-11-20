@@ -3,8 +3,8 @@
 #include "IControls.h"
 
 #define GETPARAMS(i) GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "%"); \
-GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%"); \
-GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
+GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%");                                                                                                                       \
+  GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
 GetParam(kWaveType##i)->SetDisplayText(0, "Arctan"); \
 GetParam(kWaveType##i)->SetDisplayText(1, "TANH"); \
 GetParam(kWaveType##i)->SetDisplayText(2, "TANH^3"); \
@@ -30,6 +30,7 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   GETPARAMS(0);
   GETPARAMS(1);
   GETPARAMS(2);
+  GetParam(kParallel)->InitBool("Parallel", false);
   #if IPLUG_EDITOR // http://bit.ly/2S64BDd
   mMakeGraphicsFunc = [&]() {
     return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT));
@@ -43,6 +44,7 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
     CONNECTGRAPHICS(0, -100);
     CONNECTGRAPHICS(1, 0);
     CONNECTGRAPHICS(2, 100);
+    pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(175), kParallel, "Parallel"));
   };
 #endif
 }
@@ -59,13 +61,29 @@ void waveProcessor::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
 
   const int nChans = NOutChansConnected();
   iplug::sample temp;
-  for (int s = 0; s < nFrames; s++) {
-    for (int c = 0; c < nChans; c++) {
-      temp = inputs[c][s];
-      temp = mShaper[0].process(temp);
-      temp = mShaper[1].process(temp);
-      temp = mShaper[2].process(temp);
-      outputs[c][s] = temp;
+  if (!GetParam(kParallel)->Value())
+  {
+    for (int s = 0; s < nFrames; s++)
+    {
+      for (int c = 0; c < nChans; c++)
+      {
+        temp = inputs[c][s];
+        temp = mShaper[0].process(temp);
+        temp = mShaper[1].process(temp);
+        temp = mShaper[2].process(temp);
+        outputs[c][s] = temp;
+      }
+    }
+  }
+  else {
+    for (int s = 0; s < nFrames; s++)
+    {
+      for (int c = 0; c < nChans; c++)
+      {
+        temp = inputs[c][s];
+        outputs[c][s] = (mShaper[0].process(temp) + mShaper[1].process(temp) + mShaper[2].process(temp))/3.;
+      }
+
     }
   }
 
