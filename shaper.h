@@ -81,8 +81,10 @@ public:
   inline static double sintan3(double x) { return sin(tan(std::pow(x, 3.))); }
   inline static double sinexp(double x) { return sin(std::exp(x)*x); }
 
-   double process(double x) {
-      return (algo(x * (pregain->Value()/100.)) * (postgain->Value()/100.)) * (mix->Value()/100.) + x * (1. - (mix->Value() / 100.));
+   double process(double x)
+  {
+    mixVal = (mix->Value() / 100.);
+    return (algo(x * (pregain->Value()/100.)) * (postgain->Value()/100.)) * mixVal + x * (1. - mixVal);
   }
 
 private:
@@ -91,4 +93,5 @@ private:
   iplug::IParam* postgain = nullptr;
   iplug::IParam* mix = nullptr;
   double (*algo)(double x) = nullptr;
+  double mixVal = 1.;
 };
