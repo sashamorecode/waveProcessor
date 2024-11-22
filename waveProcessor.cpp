@@ -20,12 +20,12 @@ GetParam(kWaveType##i)->SetDisplayText(11, "SIN(EXP)"); \
 GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.01, "%");
 
 #define CONNECTGRAPHICS(x, y) \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-200).GetVShifted(y), kPreGain##x)); \
-pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-100).GetVShifted(y), kWaveType##x, "Wave Type")); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(0) .GetVShifted(y), kPostGain##x)); \
-pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(100)  .GetVShifted(y), [](double i) -> double { return i; }), kCtrlTagPlot##x); \
-pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(170) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(220) .GetVShifted(y), kMix##x)); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-210).GetVShifted(y), kPreGain##x)); \
+pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-110).GetVShifted(y), kWaveType##x, "Wave Type")); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-10) .GetVShifted(y), kPostGain##x)); \
+pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(90)  .GetVShifted(y), [](double i) -> double { return i; }), kCtrlTagPlot##x); \
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(160) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(210) .GetVShifted(y), kMix##x)); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
@@ -43,10 +43,10 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
     pGraphics->AttachPanelBackground(COLOR_GRAY);
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
     const IRECT b = pGraphics->GetBounds();
-    pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(-175), kParallel, "Parallel"));
-    CONNECTGRAPHICS(0, -100); 
-    CONNECTGRAPHICS(1, 0);
-    CONNECTGRAPHICS(2, 100);
+    pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-35).GetVShifted(-170), kParallel, "Processing Mode", DEFAULT_STYLE, "Serial", "Parallel"));
+    CONNECTGRAPHICS(0, -80); 
+    CONNECTGRAPHICS(1, 20);
+    CONNECTGRAPHICS(2, 120);
   };
 #endif
 
