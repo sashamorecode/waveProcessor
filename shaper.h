@@ -19,11 +19,10 @@ enum waveform
 class shaper
 {
 public:
-  void init(iplug::IParam* pre, iplug::IParam* post, waveform wave, iplug::IParam* mix) 
+  shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype) :
+    pregainParam(pre), postgainParam(post), mixParam(mix), waveParam(wavetype) {}
+  void init() 
   {
-    pregain = pre;
-    postgain = post;
-    this->mix = mix;
     switch (wave)
     {
     case ::ARCTAN:
@@ -68,7 +67,7 @@ public:
       break;
     }
   }
-  inline static double arctan(double x) { return atan(x); }
+  inline static double arctan(double x) { return std::atan(x); }
   inline static double tanh(double x) { return std::tanh(x); }
   inline static double tanh3(double x) { return std::tanh(std::pow(x, 3.)); }
   inline static double sin(double x) { return std::sin(x); }
@@ -81,17 +80,25 @@ public:
   inline static double sintan3(double x) { return sin(tan(std::pow(x, 3.))); }
   inline static double sinexp(double x) { return sin(std::exp(x)*x); }
 
-   double process(double x)
-  {
-    mixVal = (mix->Value() / 100.);
-    return (algo(x * (pregain->Value()/100.)) * (postgain->Value()/100.)) * mixVal + x * (1. - mixVal);
+   double process(double x){
+     return algo(x * pregain) * postgain*mix + x * (1. - mix);
   }
-
+   void updateParams() {
+     pregain = pregainParam->Value() / 100.;
+     postgain = postgainParam->Value() / 100.;
+     mix = mixParam->Value() / 100.;
+     wave = static_cast<waveform>(waveParam->Int());
+     init();
+    } 
 private:
+  std::function<double(double)> algo = tanh;
   waveform waveType = ARCTAN;
-  iplug::IParam* pregain = nullptr;
-  iplug::IParam* postgain = nullptr;
-  iplug::IParam* mix = nullptr;
-  double (*algo)(double x) = nullptr;
-  double mixVal = 1.;
+  iplug::IParam* pregainParam = nullptr;
+  iplug::IParam* postgainParam = nullptr;
+  iplug::IParam* mixParam = nullptr;
+  iplug::IParam* waveParam = nullptr; 
+  double pregain = 1;
+  double postgain = 1;
+  double mix = 0;
+  waveform wave = ARCTAN;
 };

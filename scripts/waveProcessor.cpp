@@ -20,23 +20,24 @@ GetParam(kWaveType##i)->SetDisplayText(11, "SIN(EXP)"); \
 GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.01, "%");
 
 #define CONNECTGRAPHICS(x, y) \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-200).GetVShifted(y), kPreGain##x)); \
-pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-100).GetVShifted(y), kWaveType##x, "Wave Type")); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(0) .GetVShifted(y), kPostGain##x)); \
-pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(100)  .GetVShifted(y), [](double i) -> double { return i; }), kCtrlTagPlot##x); \
-pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(170) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(220) .GetVShifted(y), kMix##x)); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-160).GetVShifted(y), kPreGain##x)); \
+pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-60) .GetVShifted(y), kWaveType##x, "Wave Type")); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(40)  .GetVShifted(y), kPostGain##x)); \
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(100) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(160) .GetVShifted(y), kMix##x)); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
-  : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
+: iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
 {
   GETPARAMS(0);
   GETPARAMS(1);
   GETPARAMS(2);
   GetParam(kParallel)->InitBool("Parallel", false);
 
-#if IPLUG_EDITOR // http://bit.ly/2S64BDd
-  mMakeGraphicsFunc = [&]() { return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT)); };
+  #if IPLUG_EDITOR // http://bit.ly/2S64BDd
+  mMakeGraphicsFunc = [&]() {
+    return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT));
+  };
 
   mLayoutFunc = [&](IGraphics* pGraphics) {
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
@@ -44,43 +45,28 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
     const IRECT b = pGraphics->GetBounds();
     pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(-175), kParallel, "Parallel"));
-    CONNECTGRAPHICS(0, -100); 
+    CONNECTGRAPHICS(0, -100);
     CONNECTGRAPHICS(1, 0);
     CONNECTGRAPHICS(2, 100);
   };
 #endif
-
 }
-  
 
-#define SENDMESSAGES(i) \
-paramDVal = GetParam(kPreGain##i)->Value();                                                                                                                                                           \
-  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotIn, sizeof(double), &paramDVal);                                                                                                                      \
-  paramDVal = GetParam(kPostGain##i)->Value();                                                                                                                                                          \
-  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotOut, sizeof(double), &paramDVal);                                                                                                                    \
-  paramWVal = (waveform)GetParam(kWaveType##i)->Value();                                                                                                                                                \
-  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotWaveType, sizeof(waveform), &paramWVal);\
-
-
-void waveProcessor::OnIdle()
-{
+void waveProcessor::OnIdle() {
   SendControlValueFromDelegate(kCtrlTagVUMeter0, mVuMeters[0]->Voltage.load());
   SendControlValueFromDelegate(kCtrlTagVUMeter1, mVuMeters[1]->Voltage.load());
   SendControlValueFromDelegate(kCtrlTagVUMeter2, mVuMeters[2]->Voltage.load());
-  double paramDVal = 0;
-  waveform paramWVal = TANH;
-  SENDMESSAGES(0);
-  SENDMESSAGES(1);
-  SENDMESSAGES(2);
 }
 
+#define WAVETYPE(i) static_cast<waveform>(GetParam(kWaveType##i)->Int())
+#define INITSHAPER(i) mShaper[i].init(GetParam(kPreGain##i), GetParam(kPostGain##i), WAVETYPE(i), GetParam(kMix##i));
 
 #if IPLUG_DSP
 void waveProcessor::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
 {
-  mShaper[0].updateParams();
-  mShaper[1].updateParams();
-  mShaper[2].updateParams();
+  INITSHAPER(0);
+  INITSHAPER(1);
+  INITSHAPER(2);
 
   const int nChans = NOutChansConnected();
   iplug::sample temp = 0.0;
