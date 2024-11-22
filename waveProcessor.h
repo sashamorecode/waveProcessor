@@ -27,7 +27,8 @@ enum MPlotValType
 {
   kPlotIn = 0,
   kPlotOut,
-  kPlotWaveType
+  kPlotWaveType,
+  kPlotMix
 };
 
 const int kNumPresets = 1;
@@ -57,7 +58,7 @@ class dynamicPlot : public IVPlotControl
 public:
   dynamicPlot(const IRECT& bounds, std::function<double(double)> func, const char* label = "")
     : 
-    IVPlotControl(bounds, {Plot{IColor(255, 0, 0, 0), func}}, 1024, label) {
+    IVPlotControl(bounds, {Plot{COLOR_WHITE, func}}, 2048, label) {
     myFunc = func;
   }
 
@@ -70,12 +71,20 @@ public:
     {
       gainIn = *static_cast<const double*>(pData) / 100.;
     }
-    else
+    else if (msgTag== kPlotWaveType)
     {
       mWaveType = static_cast<waveform>(*static_cast<const int*>(pData));
     }
+    else if (msgTag == kPlotMix)
+    {
+      mix = *static_cast<const double*>(pData) / 100.;
+    }
+    else
+    {
+      assert(false);
+    }
     auto algo = getAlgo();
-    std::function<double(double)> newFunc = [this, algo](double x)->double { return algo((x*2. -1.) * gainIn) * gainOut; };  
+    std::function<double(double)> newFunc = [this, algo](double x)->double { return (algo((x*2. -1.) * gainIn) * gainOut)*mix + (x*2.-1) *(1.-mix); };  
     this->mPlots[0].func = newFunc;
     SetDirty();
   } 
@@ -116,6 +125,7 @@ private:
   std::function<double(double)> myFunc = [](double x) { return x; };
   double gainIn = 1.;
   double gainOut = 1.;
+  double mix = 0.5;
   waveform mWaveType = TANH;
   inline static double arctan(double x) { return std::atan(x); }
   inline static double tanh(double x) { return std::tanh(x); }
