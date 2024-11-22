@@ -24,8 +24,8 @@ pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShi
 pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-110).GetVShifted(y), kWaveType##x, "Wave Type")); \
 pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(-10) .GetVShifted(y), kPostGain##x)); \
 pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(90)  .GetVShifted(y), [](double i) -> double { return i; }), kCtrlTagPlot##x); \
-pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(160) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(210) .GetVShifted(y), kMix##x)); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)      .GetHShifted(190) .GetVShifted(y), kMix##x)); \
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(240) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
