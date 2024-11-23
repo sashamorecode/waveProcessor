@@ -1,5 +1,5 @@
 
-[image](https://github.com/user-attachments/assets/f54a6ced-2fd4-4816-b133-78ddb1afad4c)
+![image](https://github.com/user-attachments/assets/5c670102-c681-407b-ad6d-40e8abf8ff4f)
 
 # waveProcessor
 - WaveProcessor is a waveshaping plugin with a bank of three waveshapers that can be used in serial or parallel mode. 
