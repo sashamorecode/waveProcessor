@@ -120,18 +120,4 @@ public:
   double mix = 0.5;
   waveform mWaveType = TANH;
   algos mAlgo;
-  inline static double arctan(double x) { return std::atan(x); }
-  inline static double tanh(double x) { return std::tanh(x); }
-  inline static double tanh3(double x) { return std::tanh(std::pow(x, 3.)); }
-  inline static double sin(double x) { return std::sin(x); }
-  inline static double sin3(double x) { return std::sin(std::pow(x, 3.)); }
-  inline static double sigmoid(double x) { return (1. / (1 + std::exp(-x*2.))) - 0.5; }
-  inline static double tanhtan(double x) { return tanh(tan(x)); }
-  inline static double tanhtan3(double x) { return tanh(tan(std::pow(x, 3.))); }
-  inline static double tanhexp(double x) { return tanh(std::exp(x)*x); }
-  inline static double sintan(double x) { return sin(tan(x)); }
-  inline static double sintan3(double x) { return sin(tan(std::pow(x, 3.))); }
-  inline static double sinexp(double x) { return sin(std::exp(x)*x); }
-
-
 };
