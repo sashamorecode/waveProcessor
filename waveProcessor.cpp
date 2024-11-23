@@ -23,7 +23,7 @@ GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.01, "%");
 pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100).GetHShifted(-210).GetVShifted(y), kPreGain##x, "", myStyle));                                                                              \
   pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-110).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
 pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100).GetHShifted(-10).GetVShifted(y), kPostGain##x, "", myStyle));                                                                              \
-  pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(90)  .GetVShifted(y), [](double i) -> double { return i; }), kCtrlTagPlot##x); \
+  pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(90)  .GetVShifted(y), [](double i) -> double { return tanh(2.*i-1.); }), kCtrlTagPlot##x); \
 pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100).GetHShifted(190).GetVShifted(y), kMix##x, "", myStyle));                                                                                 \
   pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(245) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
 
