@@ -1,6 +1,6 @@
 #pragma once
 #include "IPlug_include_in_plug_hdr.h"
-enum waveform
+enum Waveform
 {
   ARCTAN,
   TANH,
@@ -16,7 +16,7 @@ enum waveform
   SINEXP,
 };
 
-struct algos
+struct Algos
 {
   static double arctan(double x) { return std::atan(x); }
   static double tanh(double x) { return std::tanh(x); }
@@ -30,7 +30,7 @@ struct algos
   static double sintan(double x) { return sin(tan(x)); }
   static double sintan3(double x) { return sin(tan(std::pow(x, 3.))); }
   static double sinexp(double x) { return sin(std::exp(x)*x); }
-  std::function<double(double)> getAlgo(waveform wave) {
+  std::function<double(double)> getAlgo(Waveform wave) {
     switch (wave)
     {
     case ::ARCTAN:
@@ -63,31 +63,40 @@ struct algos
   }
 };
 
-class shaper
+class Shaper
 {
 public:
-  shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype) :
-    pregainParam(pre), postgainParam(post), mixParam(mix), waveParam(wavetype) {}
-  double process(double x){
-     return algo(x * pregain) * postgain*mix + x * (1. - mix);
-  }
-   void updateParams() {
-     pregain = pregainParam->Value() / 100.;
-     postgain = postgainParam->Value() / 100.;
-     mix = mixParam->Value() / 100.;
-     wave = static_cast<waveform>(waveParam->Int());
-     algo = myAlgos.getAlgo(wave);
-    } 
+  Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype);
+  double process(double x);
+  void updateParams();
+
 private:
   std::function<double(double)> algo = myAlgos.arctan;
-  waveform waveType = ARCTAN;
+  Waveform waveType = ARCTAN;
   iplug::IParam* pregainParam = nullptr;
   iplug::IParam* postgainParam = nullptr;
   iplug::IParam* mixParam = nullptr;
   iplug::IParam* waveParam = nullptr;
-  algos myAlgos;
+  Algos myAlgos;
   double pregain = 1;
   double postgain = 1;
   double mix = 0;
-  waveform wave = ARCTAN;
+  Waveform wave = ARCTAN;
 };
+
+class VuMeter
+{
+public:
+  VuMeter();
+  void process(double x);
+  std::atomic<double> Voltage;
+  void store();
+
+private:
+  const double kCharge = 0.2;
+  const double kDischarge = 0.00007;
+  double mValue = 0.0;
+
+};
+
+
