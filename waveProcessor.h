@@ -59,74 +59,67 @@ public:
   dynamicPlot(const IRECT& bounds, std::function<double(double)> func, const char* label = "")
     : 
     IVPlotControl(bounds, {Plot{COLOR_WHITE, func}}, 2048, label) {
-    myFunc = func;
   }
 
   void OnMsgFromDelegate(int msgTag, int dataSize, const void* pData) override {
 
     if (msgTag== kPlotOut) {
-      gainOut = *static_cast<const double*>(pData) / 100.;
+      const double newGain = *static_cast<const double*>(pData) / 100.;
+      if (newGain != gainOut)
+      {
+        gainOut = newGain;
+        this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+        SetDirty();
+      }
     }
     else if (msgTag== kPlotIn)
     {
-      gainIn = *static_cast<const double*>(pData) / 100.;
+      const double newGain = *static_cast<const double*>(pData) / 100.;
+      if (newGain != gainIn)
+      {
+        gainIn = newGain;
+        this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+        SetDirty();
+      }
     }
     else if (msgTag== kPlotWaveType)
     {
-      mWaveType = static_cast<waveform>(*static_cast<const int*>(pData));
+      
+      const waveform newWaveType = static_cast<waveform>(*static_cast<const int*>(pData));
+      if (newWaveType != mWaveType)
+      {
+        mWaveType = newWaveType;
+        this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+        SetDirty();
+      }
     }
     else if (msgTag == kPlotMix)
     {
-      mix = *static_cast<const double*>(pData) / 100.;
+      const double newMix = *static_cast<const double*>(pData) / 100.;
+      if (newMix != mix)
+      {
+        mix = newMix;
+        this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+        SetDirty();
+      }
     }
     else
     {
       assert(false);
     }
-    auto algo = getAlgo();
-    std::function<double(double)> newFunc = [this, algo](double x)->double { return (algo((x*2. -1.) * gainIn) * gainOut)*mix + (x*2.-1) *(1.-mix); };  
-    this->mPlots[0].func = newFunc;
-    SetDirty();
-  } 
-   std::function<double(double)> getAlgo()
+  }
+  std::function<double(double)> getPlotFunc(waveform waveType, double gainIn, double gainOut, double mix)
   {
-    switch (mWaveType)
-    {
-    case ARCTAN:
-      return arctan;
-    case TANH:
-      return tanh;
-    case TANH3:
-      return tanh3;
-    case SIN:
-      return sin;
-    case SIN3:
-      return sin3;
-    case SIGMOID:
-      return sigmoid;
-    case TANHTAN:
-      return tanhtan;
-    case TANHTAN3:
-      return tanhtan3;
-    case TANHEXP:
-      return tanhexp;
-    case SINTAN:
-      return sintan;
-    case SINTAN3:
-      return sintan3;
-    case SINEXP:
-      return sinexp;
-    default:
-      return tanh;
-    }
+    const auto algo = mAlgo.getAlgo(waveType);
+    return [algo,  gainIn, gainOut, mix](double x) -> double { return algo((x * 2. - 1.) * gainIn) * gainOut * mix + (x * 2. - 1) * (1. - mix); };
   }
 
-private:
-  std::function<double(double)> myFunc = [](double x) { return x; };
+ private:
   double gainIn = 1.;
   double gainOut = 1.;
   double mix = 0.5;
   waveform mWaveType = TANH;
+  algos mAlgo;
   inline static double arctan(double x) { return std::atan(x); }
   inline static double tanh(double x) { return std::tanh(x); }
   inline static double tanh3(double x) { return std::tanh(std::pow(x, 3.)); }
