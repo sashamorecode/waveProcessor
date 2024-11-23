@@ -134,9 +134,10 @@
     <ClCompile Include="..\..\..\IGraphics\IGraphicsEditorDelegate.cpp">
       <Filter>IGraphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\AudioModules.cpp" />
+    <ClCompile Include="..\UiControlModules.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../config.h" />
     <ClInclude Include="..\waveProcessor.h" />
     <ClInclude Include="..\resources\resource.h">
       <Filter>resources</Filter>
@@ -357,6 +358,8 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h">
       <Filter>IPlug</Filter>
     </ClInclude>
+    <ClInclude Include="..\AudioModules.h" />
+    <ClInclude Include="..\UiControlModules.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="resources">

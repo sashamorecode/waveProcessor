@@ -253,7 +253,6 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="../config.h" />
     <ClInclude Include="..\..\..\Dependencies\IPlug\VST3_SDK\base\source\classfactoryhelpers.h" />
     <ClInclude Include="..\..\..\Dependencies\IPlug\VST3_SDK\base\source\fbuffer.h" />
     <ClInclude Include="..\..\..\Dependencies\IPlug\VST3_SDK\base\source\fcleanup.h" />
@@ -326,6 +325,8 @@
     <ClInclude Include="..\..\..\IPlug\VST3\IPlugVST3_Parameter.h" />
     <ClInclude Include="..\..\..\IPlug\VST3\IPlugVST3_ProcessorBase.h" />
     <ClInclude Include="..\..\..\IPlug\VST3\IPlugVST3_View.h" />
+    <ClInclude Include="..\AudioModules.h" />
+    <ClInclude Include="..\UiControlModules.h" />
     <ClInclude Include="..\waveProcessor.h" />
     <ClInclude Include="..\resources\resource.h" />
   </ItemGroup>
@@ -388,6 +389,8 @@
     <ClCompile Include="..\..\..\IPlug\IPlugTimer.cpp" />
     <ClCompile Include="..\..\..\IPlug\VST3\IPlugVST3.cpp" />
     <ClCompile Include="..\..\..\IPlug\VST3\IPlugVST3_ProcessorBase.cpp" />
+    <ClCompile Include="..\AudioModules.cpp" />
+    <ClCompile Include="..\UiControlModules.cpp" />
     <ClCompile Include="..\waveProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>

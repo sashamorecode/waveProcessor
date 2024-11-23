@@ -77,7 +77,8 @@
     <ClCompile Include="..\..\..\IGraphics\Drawing\IGraphicsSkia.cpp">
       <Filter>IGraphics\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="..\shaper.cpp" />
+    <ClCompile Include="..\AudioModules.cpp" />
+    <ClCompile Include="..\UiControlModules.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\waveProcessor.h" />
@@ -259,7 +260,8 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h">
       <Filter>IPlug</Filter>
     </ClInclude>
-    <ClInclude Include="..\shaper.h" />
+    <ClInclude Include="..\AudioModules.h" />
+    <ClInclude Include="..\UiControlModules.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="resources">
