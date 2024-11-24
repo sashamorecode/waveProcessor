@@ -3,7 +3,7 @@
 #include "IControls.h"
 #include "AudioModules.h"
 #include "UiControlModules.h"
-#define SHAPE(x) kPreGain##x, kPostGain##x, kWaveType##x, kMix##x
+#define SHAPE(x) kPreGain##x, kPostGain##x, kWaveType##x, kMix##x, kClip##x
 enum EParams
 {
   SHAPE(0),
@@ -40,7 +40,7 @@ public:
 
 
 private:
-#define SHAPER(x) Shaper(GetParam(kPreGain##x), GetParam(kPostGain##x), GetParam(kMix##x), GetParam(kWaveType##x))
+#define SHAPER(x) Shaper(GetParam(kPreGain##x), GetParam(kPostGain##x), GetParam(kMix##x), GetParam(kWaveType##x), GetParam(kClip##x))
   Shaper mShaper[3] = {SHAPER(0), SHAPER(1), SHAPER(2)};
   VuMeter* mVuMeters[3] = {new VuMeter(), new VuMeter(), new VuMeter()};
 };

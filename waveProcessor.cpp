@@ -2,9 +2,11 @@
 #include "IPlug_include_in_plug_src.h"
 #include "IControls.h"
 
-#define GETPARAMS(i) GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "%"); \
+#define GETPARAMS(i) \
+GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "00 %"); \
 GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%");\
-GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
+GetParam(kClip##i)->InitDouble("Clip", 300., 0., 500.0, 0.01, "%", 0, "", IParam::ShapePowCurve(3.));                                                                                                  \
+  GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
 GetParam(kWaveType##i)->SetDisplayText(0, "Arctan"); \
 GetParam(kWaveType##i)->SetDisplayText(1, "TANH"); \
 GetParam(kWaveType##i)->SetDisplayText(2, "TANH^3"); \
@@ -20,12 +22,13 @@ GetParam(kWaveType##i)->SetDisplayText(11, "SIN(EXP)"); \
 GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.01, "%");
 
 #define CONNECTGRAPHICS(x, y) \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-210).GetVShifted(y), kPreGain##x, "", myStyle));\
-  pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-110).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-10).GetVShifted(y), kPostGain##x, "", myStyle));\
-  pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100)        .GetHShifted(90)  .GetVShifted(y), [](double i) -> double { return tanh(2.*i-1.); }), kCtrlTagPlot##x); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(190).GetVShifted(y), kMix##x, "", myStyle));\
-  pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(245) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-220).GetVShifted(y), kPreGain##x, "", myStyle));\
+pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-120).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-20).GetVShifted(y), kPostGain##x, "", myStyle));  \
+pGraphics->AttachControl(new IVSliderControl(b.GetCentredInside(100).GetHPadded(-30).GetHShifted(40).GetVShifted(y), kClip##x, "Clip", myStyle));\
+pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100).GetHShifted(110).GetVShifted(y).GetPadded(-5), [](double i) -> double { return tanh(2. * i - 1.); }), kCtrlTagPlot##x);               \
+  pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(210).GetVShifted(y), kMix##x, "", myStyle));\
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(260) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
@@ -65,7 +68,9 @@ paramDVal = GetParam(kPreGain##i)->Value();\
   paramWVal = (Waveform)GetParam(kWaveType##i)->Value(); \
   SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotWaveType, sizeof(Waveform), &paramWVal);  \
   paramDVal = GetParam(kMix##i)->Value();\
-  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotMix, sizeof(double), &paramDVal);
+  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotMix, sizeof(double), &paramDVal);\
+  paramDVal = GetParam(kClip##i)->Value();\
+  SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotClip, sizeof(double), &paramDVal);
 
 
 void waveProcessor::OnIdle()

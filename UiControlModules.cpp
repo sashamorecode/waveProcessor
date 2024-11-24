@@ -31,7 +31,7 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
     if (newGain != gainOut)
     {
       gainOut = newGain;
-      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix, clip);
       SetDirty();
     }
   }
@@ -41,7 +41,7 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
     if (newGain != gainIn)
     {
       gainIn = newGain;
-      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix, clip);
       SetDirty();
     }
   }
@@ -52,7 +52,7 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
     if (newWaveType != mWaveType)
     {
       mWaveType = newWaveType;
-      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix, clip);
       SetDirty();
     }
   }
@@ -62,7 +62,17 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
     if (newMix != mix)
     {
       mix = newMix;
-      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix);
+      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix, clip);
+      SetDirty();
+    }
+  }
+  else if (msgTag == kPlotClip)
+  {
+    const double newClip = *static_cast<const double*>(pData) / 100.;
+    if (newClip != clip)
+    {
+      clip = newClip;
+      this->mPlots[0].func = getPlotFunc(mWaveType, gainIn, gainOut, mix, clip);
       SetDirty();
     }
   }
@@ -71,9 +81,16 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
     assert(false);
   }
 }
-std::function<double(double)> dynamicPlot::getPlotFunc(Waveform waveType, double gainIn, double gainOut, double mix)
-{
+ std::function<double(double)> dynamicPlot::getPlotFunc(Waveform waveType, double gainIn, double gainOut, double mix, double clip)
+ {
   const auto algo = mAlgo.getAlgo(waveType);
-  return [algo,  gainIn, gainOut, mix](double x) -> double { return algo((x * 2. - 1.) * gainIn) * gainOut * mix + (x * 2. - 1) * (1. - mix); };
+   return [algo, gainIn, gainOut, mix, clip](double x) -> double {
+    double procesed = algo((x * 2. - 1.) * gainIn) * gainOut;
+    if (clip < 5 && std::abs(procesed) > clip)
+    {
+      procesed = procesed / std::abs(procesed) * clip;
+    }
+    return procesed * mix + (x * 2. - 1) * (1. - mix);
+  };
 }
 

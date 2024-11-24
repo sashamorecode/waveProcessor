@@ -66,7 +66,7 @@ struct Algos
 class Shaper
 {
 public:
-  Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype);
+  Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype, iplug::IParam* clip);
   double process(double x);
   void updateParams();
 
@@ -77,10 +77,12 @@ private:
   iplug::IParam* postgainParam = nullptr;
   iplug::IParam* mixParam = nullptr;
   iplug::IParam* waveParam = nullptr;
+  iplug::IParam* clipParam = nullptr;
   Algos myAlgos;
   double pregain = 1;
   double postgain = 1;
   double mix = 0;
+  double clip = 3.0;
   Waveform wave = ARCTAN;
 };
 
