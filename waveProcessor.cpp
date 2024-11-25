@@ -45,11 +45,11 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   GETPARAMS(1);
   GETPARAMS(2);
   GetParam(kParallel)->InitBool("Parallel", false);
-  GetParam(kLfoIsHostClocked)->InitBool("LFO Host Clocked", false);
-  GetParam(kLfoAmp)->InitDouble("Lfo Amp", 0., -10., 10., 0.01, "%");
-  GetParam(kLfoFreq)->InitDouble("LFO Frequency", 1., 0.1, 10., 0.01, "Hz");  
-  GetParam(kLfoOffset)->InitDouble("LFO Offset", 0., -1., 1., 0.01, "%");
-  GetParam(kLfoRatio)->InitEnum("LFO Ratio", 0, lfo_times.size());
+  GetParam(kLfoIsHostClocked)->InitBool("Lfo", false);
+  GetParam(kLfoAmp)->InitDouble("Amp", 0., -10., 10., 0.01, "");
+  GetParam(kLfoFreq)->InitDouble("Freq", 1., 0.01, 20., 0.01, "Hz");  
+  GetParam(kLfoOffset)->InitDouble("Offset", 0., -1., 1., 0.01, "* λ");
+  GetParam(kLfoRatio)->InitEnum("Ratio", 0, lfo_times.size());
   for (int i = 0; i < lfo_times.size(); i++)
   {
     GetParam(kLfoRatio)->SetDisplayText(i, lfo_times[i].c_str());
@@ -69,7 +69,7 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
       IVStyle minimalKnobStyle = IVStyle(myStyle);
       minimalKnobStyle.showValue = false;
       pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-200), kParallel, "Processing Mode", myStyle, "Serial", "Parallel"));
-      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-60), kLfoIsHostClocked, "", myStyle, "free", "sync"));
+      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-60), kLfoIsHostClocked, "", myStyle, "Free", "Sync"));
       pGraphics->AttachControl(new LfoModuleControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(40), myStyle, kLfoFreq, kLfoRatio), kCtrlTagLfo);
       pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(110), kLfoAmp, "", myStyle));
       pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(180), kLfoOffset, "", myStyle));
