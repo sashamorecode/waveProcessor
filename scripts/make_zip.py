@@ -7,6 +7,7 @@ MajorStr = ""
 MinorStr = "" 
 BugfixStr = ""
 BUNDLE_NAME = ""
+string.lstrip = lambda s, c: s[len(c):] if s.startswith(c) else s
 
 def  main():
   if len(sys.argv) != 2:
