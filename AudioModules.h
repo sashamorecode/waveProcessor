@@ -16,6 +16,7 @@ enum Waveform
   SINEXP,
 };
 
+
 struct Algos
 {
   static double arctan(double x) { return std::atan(x); }
@@ -63,27 +64,45 @@ struct Algos
   }
 };
 
-class Shaper
+enum KLfoTimes
+{
+  t2beat = 0,
+  t3_2beat,
+  t1beat,
+  t3_4beat,
+  t2_3beat,
+  t1_2beat,
+  t1_3beat,
+  t1_4beat,
+  t1_6beat,
+  t1_8beat,
+  t1_16beat,
+  tnum_lfo_times,
+};
+static std::vector<std::string> lfo_times = {"2/1", "3/2", "1/1", "3/4", "2/3", "1/2", "1/3", "1/4", "1/6", "1/8", "1/16"};
+
+
+
+class Lfo
 {
 public:
-  Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype, iplug::IParam* clip);
-  double process(double x);
-  void updateParams();
+  Lfo(iplug::IParam* isHostClocked, iplug::IParam* freq, iplug::IParam* ratio, iplug::IParam* amp, iplug::IParam* offset) :
+    isHostClockedParam(isHostClocked), freqParam(freq), ratioParam(ratio), ampParam(amp), offsetParam(offset) {}
+  void process();
+  double getVal();
+  static double getRatio(KLfoTimes time);
+  void updateParams(double sampleRate, double samplesPerBeat, double samplePos);
 
 private:
-  std::function<double(double)> algo = myAlgos.arctan;
-  Waveform waveType = ARCTAN;
-  iplug::IParam* pregainParam = nullptr;
-  iplug::IParam* postgainParam = nullptr;
-  iplug::IParam* mixParam = nullptr;
-  iplug::IParam* waveParam = nullptr;
-  iplug::IParam* clipParam = nullptr;
-  Algos myAlgos;
-  double pregain = 1;
-  double postgain = 1;
-  double mix = 0;
-  double clip = 3.0;
-  Waveform wave = ARCTAN;
+  iplug::IParam* isHostClockedParam = nullptr;
+  iplug::IParam* freqParam = nullptr;
+  iplug::IParam* ratioParam = nullptr;
+  iplug::IParam* ampParam = nullptr;
+  iplug::IParam* offsetParam = nullptr;
+  double wavelength = 1;
+  double amp = 1;
+  double offset = 0;
+  double phase = 0;
 };
 
 class VuMeter
@@ -101,4 +120,44 @@ private:
 
 };
 
+
+
+
+class Shaper
+{
+public:
+  Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplug::IParam* wavetype, iplug::IParam* clip,
+    iplug::IParam* preGainLfo, iplug::IParam* postGainLfo, iplug::IParam* mixLfo, iplug::IParam* clipLfo, Lfo* lfoPtr);
+  double process(double x);
+  void updateParams();
+
+
+  Lfo* lfo = nullptr;
+private:
+  std::function<double(double)> algo = myAlgos.arctan;
+  Waveform waveType = ARCTAN;
+  iplug::IParam* pregainParam = nullptr;
+  iplug::IParam* postgainParam = nullptr;
+  iplug::IParam* mixParam = nullptr;
+  iplug::IParam* waveParam = nullptr;
+  iplug::IParam* clipParam = nullptr;
+
+  iplug::IParam* preGainLfoParam = nullptr;
+  iplug::IParam* postGainLfoParam = nullptr;
+  iplug::IParam* mixLfoParam = nullptr;
+  iplug::IParam* clipLfoParam = nullptr;
+
+  Algos myAlgos;
+
+  double pregain = 1;
+  double pregainLfo = 0;
+  double postgain = 1;
+  double postgainLfo = 0;
+  double mix = 0;
+  double mixLfo = 0;
+  double clip = 3.0;
+  double clipLfo = 0; 
+
+  Waveform wave = ARCTAN;
+};
 

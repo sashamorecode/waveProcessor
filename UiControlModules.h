@@ -44,3 +44,26 @@ private:
   Algos mAlgo;
 };
 
+class LfoModuleControl : public IControl
+{
+public:
+  LfoModuleControl(const IRECT& bounds, IVStyle style, int freqParam, int ratioParam)
+    : mFreqControl(new IVKnobControl(bounds, freqParam, "Freq", style))
+    , mRatioControl(new IVKnobControl(bounds, ratioParam, "Ratio", style))
+    , IControl(bounds)
+  {
+  }
+  void OnAttached() override {
+    this->GetDelegate()->GetUI()->AttachControl(mFreqControl);
+    this->GetDelegate()->GetUI()->AttachControl(mRatioControl);
+  }
+
+  void Draw(IGraphics& g) override;
+
+  void SetValueFromDelegate(double val, int valIdx) override;
+
+private:
+  bool isHostClocked = false;
+  IVKnobControl* mFreqControl;
+  IVKnobControl* mRatioControl;
+};

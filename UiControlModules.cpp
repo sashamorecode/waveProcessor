@@ -94,3 +94,30 @@ void dynamicPlot::OnMsgFromDelegate(int msgTag, int dataSize, const void* pData)
   };
 }
 
+void LfoModuleControl::Draw(IGraphics& g)
+{
+  if (isHostClocked)
+  {
+    mRatioControl->Draw(g);
+  }
+  else
+  {
+    mFreqControl->Draw(g);
+  }
+}
+
+void LfoModuleControl::SetValueFromDelegate(double val, int valIdx) {
+  isHostClocked = static_cast<bool>(val);
+  if (isHostClocked)
+  {
+    mFreqControl->Hide(true);
+    mRatioControl->Hide(false);
+  }
+  else
+  {
+    mFreqControl->Hide(false);
+    mRatioControl->Hide(true);
+  }
+
+  SetDirty(false);
+}
