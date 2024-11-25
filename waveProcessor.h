@@ -29,7 +29,7 @@ enum EParams
   kCtrlTagLfo,
 };
 
-const int kNumPresets = 3;
+const int kNumPresets = 1;
 
 using namespace iplug;
 using namespace igraphics;

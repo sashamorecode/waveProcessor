@@ -3,7 +3,7 @@
 #include "IControls.h"
 
 #define GETPARAMS(i) \
-GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "%"); \
+GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "00 %"); \
 GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%");\
 GetParam(kClip##i)->InitDouble("Clip", 300., 0., 500.0, 0.01, "%", 0, "", IParam::ShapePowCurve(3.));\
 GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
@@ -26,17 +26,17 @@ GetParam(kMixLfo##i)->InitDouble("", 0., -100., 100.0, 0.01, "");\
 GetParam(kClipLfo##i)->InitDouble("", 0., -100., 100.0, 0.01, "");
 
 #define CONNECTGRAPHICS(x, y) \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-230).GetVShifted(y), kPreGain##x,"", myStyle));\
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(-230).GetVShifted(y + 70), kPreGainLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-130).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-30).GetVShifted(y), kPostGain##x, "", myStyle));  \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(-30).GetVShifted(y + 70), kPostGainLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new IVSliderControl(b.GetCentredInside(100).GetHPadded(-30).GetHShifted(30).GetVShifted(y), kClip##x, "Clip", myStyle));\
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(30).GetVShifted(y + 70), kClipLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100).GetHShifted(100).GetVShifted(y).GetPadded(-5), [](double i) -> double { return tanh(2. * i - 1.); }), kCtrlTagPlot##x);               \
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(200).GetVShifted(y), kMix##x, "", myStyle));\
-pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(200).GetVShifted(y + 70), kMixLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(250) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-220).GetVShifted(y), kPreGain##x, "", myStyle));\
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(-220).GetVShifted(y + 70), kPreGainLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-120).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(-20).GetVShifted(y), kPostGain##x, "", myStyle));  \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(-20).GetVShifted(y + 70), kPostGainLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new IVSliderControl(b.GetCentredInside(100).GetHPadded(-30).GetHShifted(40).GetVShifted(y), kClip##x, "Clip", myStyle));\
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(40).GetVShifted(y + 70), kClipLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100).GetHShifted(110).GetVShifted(y).GetPadded(-5), [](double i) -> double { return tanh(2. * i - 1.); }), kCtrlTagPlot##x);               \
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(100)        .GetHShifted(210).GetVShifted(y), kMix##x, "", myStyle));\
+pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(210).GetVShifted(y + 70), kMixLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(260) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
@@ -45,7 +45,7 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   GETPARAMS(1);
   GETPARAMS(2);
   GetParam(kParallel)->InitBool("Parallel", false);
-  GetParam(kLfoIsHostClocked)->InitBool("", false);
+  GetParam(kLfoIsHostClocked)->InitBool("Lfo", false);
   GetParam(kLfoAmp)->InitDouble("Amp", 0., -10., 10., 0.01, "");
   GetParam(kLfoFreq)->InitDouble("Freq", 1., 0.01, 20., 0.01, "Hz");  
   GetParam(kLfoOffset)->InitDouble("Offset", 0., -1., 1., 0.01, "* λ");
@@ -53,25 +53,8 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   for (int i = 0; i < lfo_times.size(); i++)
   {
     GetParam(kLfoRatio)->SetDisplayText(i, lfo_times[i].c_str());
-  }
-
-  //Presets
-  MakePreset( "Default",
-    100., 100., TANH, 100., 500., 0., 0., 0., 0.,
-    100., 100., TANH, 0., 500., 0., 0., 0., 0.,
-    100., 100., TANH, 0., 500., 0., 0., 0., 0.,
-    false, false, 1., t1beat, 0., 0.);
-  MakePreset("Saturator",
-    200., 100., TANH, 100., 500., 0., 0., 0., 0.,
-    100., 100., TANH, 0., 500., 0., 0., 0., 0.,
-    100., 100., TANH, 0., 500., 0., 0., 0., 0.,
-    false, false, 1., t1beat, 0., 0.);
-  MakePreset("Unstable Wave",
-    180., 100., TANH, 100., 500., 25., 0., 0., 0.,
-    287., 100., SIGMOID, 75., 500., -40., 0., 0., 0.,
-    152., 70., TANH, 60., 300., 0., 0., 0., 0.,
-    false, true, 1., t1beat, 1.85, 0.);
-
+  } 
+    
 #if IPLUG_EDITOR // http://bit.ly/2S64BDd
     mMakeGraphicsFunc = [&]() { return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT)); };
 
@@ -86,11 +69,10 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
       IVStyle minimalKnobStyle = IVStyle(myStyle);
       minimalKnobStyle.showValue = false;
       pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-200), kParallel, "Processing Mode", myStyle, "Serial", "Parallel"));
-      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(-205).GetHShifted(50), kLfoIsHostClocked, "", myStyle, "Free", "Sync"), -1, "LFO");
-      pGraphics->AttachControl(new LfoModuleControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(110), myStyle, kLfoFreq, kLfoRatio), kCtrlTagLfo, "LFO");
-      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(160), kLfoAmp, "", myStyle), -1, "LFO");
-      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(210), kLfoOffset, "", myStyle), -1, "LFO");
-      pGraphics->AttachControl(new IVGroupControl("LFO", "LFO", 10., 10., 10., 10., myStyle));
+      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-60), kLfoIsHostClocked, "", myStyle, "Free", "Sync"));
+      pGraphics->AttachControl(new LfoModuleControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(40), myStyle, kLfoFreq, kLfoRatio), kCtrlTagLfo);
+      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(110), kLfoAmp, "", myStyle));
+      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(180), kLfoOffset, "", myStyle));
       CONNECTGRAPHICS(0, -110);
       CONNECTGRAPHICS(1, 30);
       CONNECTGRAPHICS(2, 170);
