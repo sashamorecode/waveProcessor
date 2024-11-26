@@ -17,7 +17,9 @@ enum EParams
   kLfoOffset,
   kNumParams
 };
+#undef SHAPE
 
+#define MODCTRL(x) kCtrlTagPreGainMod##x, kCtrlTagPostGainMod##x, kCtrlTagMixMod##x, kCtrlTagClipMod##x
   enum KCtrlTags
 {
   kCtrlTagVUMeter0 = 0,
@@ -27,7 +29,11 @@ enum EParams
   kCtrlTagPlot1,
   kCtrlTagPlot2,
   kCtrlTagLfo,
+  MODCTRL(0),
+  MODCTRL(1),
+  MODCTRL(2),
 };
+#undef MODCTRL
 
 const int kNumPresets = 3;
 

@@ -67,3 +67,19 @@ private:
   IVKnobControl* mFreqControl;
   IVKnobControl* mRatioControl;
 };
+
+class ModKnobControl : public IVKnobControl
+{
+
+public:
+  ModKnobControl(const IRECT& bounds, int paramIdx, const char* label, IVStyle style)
+    : IVKnobControl(bounds, paramIdx, label, style)
+  {
+  }
+
+  void DrawWidget(IGraphics& g) override;
+  void OnMsgFromDelegate(int msgTag, int msgSize, const void* msg) override;
+
+private:
+  double mVal = 0.;
+};

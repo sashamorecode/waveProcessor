@@ -121,3 +121,36 @@ void LfoModuleControl::SetValueFromDelegate(double val, int valIdx) {
 
   SetDirty(false);
 }
+
+void ModKnobControl::DrawWidget(IGraphics& g) {
+  float widgetRadius; // The radius out to the indicator track arc
+
+  if (mWidgetBounds.W() > mWidgetBounds.H())
+    widgetRadius = (mWidgetBounds.H() / 2.f);
+  else
+    widgetRadius = (mWidgetBounds.W() / 2.f);
+
+  const float cx = mWidgetBounds.MW(), cy = mWidgetBounds.MH();
+
+  widgetRadius -= (mTrackSize / 2.f);
+
+  IRECT knobHandleBounds = mWidgetBounds.GetCentredInside((widgetRadius - mTrackToHandleDistance) * 2.f);
+  const float angle = mAngle1 + (static_cast<float>(GetValue()) * (mAngle2 - mAngle1));
+  mAnchorAngle = angle;
+  DrawIndicatorTrack(g, mVal + angle, cx, cy, widgetRadius);
+  DrawPressableShape(g, /*mShape*/ EVShape::Ellipse, knobHandleBounds, mMouseDown, mMouseIsOver, IsDisabled());
+  DrawPointer(g, angle, cx, cy, knobHandleBounds.W() / 2.f);
+}
+
+void ModKnobControl::OnMsgFromDelegate(int msgTag, int msgSize, const void* msg)
+{
+  if (!IsDisabled())
+  {
+    const double newMVal = *static_cast<const double*>(msg);
+    if (newMVal != mVal)
+    {
+      mVal = newMVal;
+      SetDirty(false);
+    }
+  }
+}
