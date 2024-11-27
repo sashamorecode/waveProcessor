@@ -17,9 +17,9 @@ Shaper::Shaper(iplug::IParam* pre, iplug::IParam* post, iplug::IParam* mix, iplu
 
 double Shaper::process(double x){
   const double lfoVal = lfo->getVal();
-  const double pregainL = pregain + lfoVal * pregainLfo;
-  const double postgainL = postgain + lfoVal* postgainLfo;
-  const double mixL = std::max(std::min(this->mix + lfoVal * mixLfo, 1.), 0.);
+  const double pregainL = iplug::Clip(pregain + lfoVal * pregainLfo, 0., 1000.);
+  const double postgainL = iplug::Clip(postgain + lfoVal * postgainLfo, 0., 400.);
+  const double mixL = iplug::Clip(this->mix + lfoVal * mixLfo, 0., 1.);
   const double clipL = std::max(this->clip + lfoVal * clipLfo, 0.);
   double procesed = algo(x * pregainL) * postgainL;
   if (clipL < 5 && std::abs(procesed) > clipL)

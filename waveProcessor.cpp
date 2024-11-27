@@ -3,23 +3,23 @@
 #include "IControls.h"
 
 #define GETPARAMS(i) \
-GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.01, "%"); \
-GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.01, "%");\
-GetParam(kClip##i)->InitDouble("Clip", 300., 0., 500.0, 0.01, "%", 0, "", IParam::ShapePowCurve(3.));\
+GetParam(kPreGain##i)->InitDouble("Pre Gain", 100., 0., 1000.0, 0.1, "%"); \
+GetParam(kPostGain##i)->InitDouble("Post Gain", 100., 0., 400.0, 0.1, "%");\
+GetParam(kClip##i)->InitDouble("Clip", 300., 0., 500.0, 0.1, "%", 0, "", IParam::ShapePowCurve(3.));\
 GetParam(kWaveType##i)->InitEnum("Wave Type", TANH, 12); \
 GetParam(kWaveType##i)->SetDisplayText(0, "Arctan"); \
-GetParam(kWaveType##i)->SetDisplayText(1, "TANH"); \
-GetParam(kWaveType##i)->SetDisplayText(2, "TANH^3"); \
-GetParam(kWaveType##i)->SetDisplayText(3, "SIN"); \
-GetParam(kWaveType##i)->SetDisplayText(4, "SIN^3"); \
-GetParam(kWaveType##i)->SetDisplayText(5, "SIGMOID"); \
-GetParam(kWaveType##i)->SetDisplayText(6, "TANH(TAN)"); \
-GetParam(kWaveType##i)->SetDisplayText(7, "TANH(TAN^3)"); \
-GetParam(kWaveType##i)->SetDisplayText(8, "TANH(EXP)"); \
-GetParam(kWaveType##i)->SetDisplayText(9, "SIN(TAN)"); \
-GetParam(kWaveType##i)->SetDisplayText(10, "SIN(TAN^3)"); \
-GetParam(kWaveType##i)->SetDisplayText(11, "SIN(EXP)"); \
-GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.01, "");\
+GetParam(kWaveType##i)->SetDisplayText(1, "Tanh"); \
+GetParam(kWaveType##i)->SetDisplayText(2, "Tanh^3"); \
+GetParam(kWaveType##i)->SetDisplayText(3, "Sine"); \
+GetParam(kWaveType##i)->SetDisplayText(4, "Sine^3"); \
+GetParam(kWaveType##i)->SetDisplayText(5, "Sigmoid"); \
+GetParam(kWaveType##i)->SetDisplayText(6, "Tanh (Tan)"); \
+GetParam(kWaveType##i)->SetDisplayText(7, "Tanh (Tan^3)"); \
+GetParam(kWaveType##i)->SetDisplayText(8, "Tanh (Exp)"); \
+GetParam(kWaveType##i)->SetDisplayText(9, "Sin (Tan)"); \
+GetParam(kWaveType##i)->SetDisplayText(10, "Sin (Tan^3)"); \
+GetParam(kWaveType##i)->SetDisplayText(11, "Sin (Exp)"); \
+GetParam(kMix##i)->InitDouble("Mix", 50., 0., 100.0, 0.1, "");\
 GetParam(kPreGainLfo##i)->InitDouble("", 0., -100., 100.0, 0.01, "");\
 GetParam(kPostGainLfo##i)->InitDouble("", 0., -100., 100.0, 0.01, "");\
 GetParam(kMixLfo##i)->InitDouble("", 0., -100., 100.0, 0.01, "");\
@@ -31,12 +31,12 @@ pGraphics->AttachControl(new ModKnobControl(b.GetCentredInside(100).GetHShifted(
   pGraphics->AttachControl(new IVMenuButtonControl(b.GetCentredInside(100).GetHShifted(-130).GetVShifted(y), kWaveType##x, "Wave Type", myStyle)); \
 pGraphics->AttachControl(new ModKnobControl(b.GetCentredInside(100).GetHShifted(-30).GetVShifted(y), kPostGain##x, "", myStyle), kCtrlTagPostGainMod##x);                                             \
   pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(-30).GetVShifted(y + 70), kPostGainLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new IVSliderControl(b.GetCentredInside(100).GetHPadded(-30).GetHShifted(30).GetVShifted(y), kClip##x, "Clip", myStyle), kCtrlTagClipMod##x);                                 \
-  pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(30).GetVShifted(y + 70), kClipLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100).GetHShifted(100).GetVShifted(y).GetPadded(-5), [](double i) -> double { return tanh(2. * i - 1.); }), kCtrlTagPlot##x);               \
-pGraphics->AttachControl(new ModKnobControl(b.GetCentredInside(100).GetHShifted(200).GetVShifted(y), kMix##x, "", myStyle), kCtrlTagMixMod##x);                                                       \
-  pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(200).GetVShifted(y + 70), kMixLfo##x, "", minimalKnobStyle));\
-pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(250) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
+pGraphics->AttachControl(new IVSliderControl(b.GetCentredInside(100).GetHPadded(-20).GetHShifted(40).GetVShifted(y), kClip##x, "Clip", myStyle), kCtrlTagClipMod##x);                                 \
+  pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(40).GetVShifted(y + 70), kClipLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new dynamicPlot(b.GetCentredInside(100).GetHShifted(120).GetVShifted(y).GetPadded(-5), [](double i) -> double { return tanh(2. * i - 1.); }), kCtrlTagPlot##x);               \
+pGraphics->AttachControl(new ModKnobControl(b.GetCentredInside(100).GetHShifted(220).GetVShifted(y), kMix##x, "", myStyle), kCtrlTagMixMod##x);                                                       \
+  pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(20)        .GetHShifted(220).GetVShifted(y + 70), kMixLfo##x, "", minimalKnobStyle));\
+pGraphics->AttachControl(new VuMeterControl(b.GetCentredInside(100)     .GetHShifted(260) .GetVShifted(y).GetVPadded(-5).GetHPadded(-45), COLOR_BLACK, kCtrlTagVUMeter##x), kCtrlTagVUMeter##x); \
 
 waveProcessor::waveProcessor(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
@@ -46,9 +46,9 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   GETPARAMS(2);
   GetParam(kParallel)->InitBool("Parallel", false);
   GetParam(kLfoIsHostClocked)->InitBool("", false);
-  GetParam(kLfoAmp)->InitDouble("Amp", 0., -10., 10., 0.01, "");
   GetParam(kLfoFreq)->InitDouble("Freq", 1., 0.01, 20., 0.01, "Hz");  
-  GetParam(kLfoOffset)->InitDouble("Offset", 0., -1., 1., 0.01, "* λ");
+  GetParam(kLfoAmp)->InitDouble("Amp", 0., -10., 10., 0.1, "");
+  GetParam(kLfoOffset)->InitDouble("Offset", 0., -1., 1., 0.01, "");
   GetParam(kLfoRatio)->InitEnum("Ratio", 0, lfo_times.size());
   for (int i = 0; i < lfo_times.size(); i++)
   {
@@ -76,7 +76,7 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
     mMakeGraphicsFunc = [&]() { return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT)); };
 
     mLayoutFunc = [&](IGraphics* pGraphics) {
-      const IColor bgColor = IColor(255, 0, 90, 179);
+      const IColor bgColor = IColor(255, 60, 90, 179);
       pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
       pGraphics->AttachPanelBackground(bgColor);
       pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
@@ -85,11 +85,11 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
       const IVStyle myStyle = IVStyle(true, true, mySpec, DEFAULT_LABEL_TEXT, DEFAULT_VALUE_TEXT, false, true, false, false, 0.2f, 1.f, 0.f, 1.f, 0.f);
       IVStyle minimalKnobStyle = IVStyle(myStyle);
       minimalKnobStyle.showValue = false;
-      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-200), kParallel, "Processing Mode", myStyle, "Serial", "Parallel"));
-      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(-205).GetHShifted(50), kLfoIsHostClocked, "", myStyle, "Free", "Sync"), -1, "LFO");
+      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(120).GetVPadded(-30).GetVShifted(-210).GetHShifted(-200), kParallel, "Mode", myStyle, "Serial", "Parallel"));
+      pGraphics->AttachControl(new IVToggleControl(b.GetCentredInside(50).GetVShifted(-205).GetHShifted(40), kLfoIsHostClocked, "", myStyle, "Free", "Sync"), -1, "LFO");
       pGraphics->AttachControl(new LfoModuleControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(110), myStyle, kLfoFreq, kLfoRatio), kCtrlTagLfo, "LFO");
-      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(160), kLfoAmp, "", myStyle), -1, "LFO");
-      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(210), kLfoOffset, "", myStyle), -1, "LFO");
+      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(170), kLfoAmp, "", myStyle), -1, "LFO");
+      pGraphics->AttachControl(new IVKnobControl(b.GetCentredInside(60).GetVShifted(-210).GetHShifted(230), kLfoOffset, "", myStyle), -1, "LFO");
       pGraphics->AttachControl(new IVGroupControl("LFO", "LFO", 10., 10., 10., 10., myStyle));
       CONNECTGRAPHICS(0, -110);
       CONNECTGRAPHICS(1, 30);
@@ -101,25 +101,27 @@ waveProcessor::waveProcessor(const InstanceInfo& info)
   
 
 #define SENDMESSAGES(i) \
-paramDVal = lfoVal * GetParam(kPreGainLfo##i)->Value();\
-SendControlMsgFromDelegate(kCtrlTagPreGainMod##i, 0, sizeof(double), &paramDVal);\
-paramDVal+= GetParam(kPreGain##i)->Value();\
+paramDVal = GetParam(kPreGain##i)->Value();\
+lfoParamVal = std::min(std::max(-paramDVal,lfoVal * GetParam(kPreGainLfo##i)->Value()), 1000.-paramDVal);\
+paramDVal += lfoParamVal;\
+SendControlMsgFromDelegate(kCtrlTagPreGainMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotIn, sizeof(double), &paramDVal);\
-paramDVal = lfoVal * GetParam(kPostGainLfo##i)->Value();\
-SendControlMsgFromDelegate(kCtrlTagPostGainMod##i, 0, sizeof(double), &paramDVal);\
-paramDVal += GetParam(kPostGain##i)->Value();\
+paramDVal = GetParam(kPostGain##i)->Value();\
+lfoParamVal = std::min(std::max(-paramDVal,lfoVal * GetParam(kPostGainLfo##i)->Value()), 400.-paramDVal);\
+paramDVal += lfoParamVal;\
+SendControlMsgFromDelegate(kCtrlTagPostGainMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotOut, sizeof(double), &paramDVal);\
 paramWVal = (Waveform)GetParam(kWaveType##i)->Value(); \
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotWaveType, sizeof(Waveform), &paramWVal);  \
-paramDVal = std::max(std::min(GetParam(kMix##i)->Value() + lfoVal * GetParam(kMixLfo##i)->Value(), 100.), 0.) - GetParam(kMix##i)->Value();\
-paramDVal *= 3.;\
-SendControlMsgFromDelegate(kCtrlTagMixMod##i, 0, sizeof(double), &paramDVal);\
-paramDVal /=3;\
-paramDVal += GetParam(kMix##i)->Value();\
+paramDVal = GetParam(kMix##i)->Value();\
+lfoParamVal = std::max(std::min(lfoVal * GetParam(kMixLfo##i)->Value(), 100. - paramDVal), -paramDVal);\
+paramDVal += lfoParamVal;\
+lfoParamVal *= 3.;\
+SendControlMsgFromDelegate(kCtrlTagMixMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotMix, sizeof(double), &paramDVal);\
-paramDVal = std::max(0.,lfoVal * GetParam(kClipLfo##i)->Value());\
-SendControlMsgFromDelegate(kCtrlTagClipMod##i, 0, sizeof(double), &paramDVal);\
-paramDVal += GetParam(kClip##i)->Value(); \
+paramDVal = GetParam(kClip##i) -> Value(); \
+lfoParamVal = std::max(-paramDVal,lfoVal * GetParam(kClipLfo##i)->Value());\
+SendControlMsgFromDelegate(kCtrlTagClipMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotClip, sizeof(double), &paramDVal); \
 
 
@@ -128,7 +130,7 @@ void waveProcessor::OnIdle()
   SendControlValueFromDelegate(kCtrlTagVUMeter0, mVuMeters[0]->Voltage.load());
   SendControlValueFromDelegate(kCtrlTagVUMeter1, mVuMeters[1]->Voltage.load());
   SendControlValueFromDelegate(kCtrlTagVUMeter2, mVuMeters[2]->Voltage.load());
-  double paramDVal = 0;
+  double paramDVal, lfoParamVal = 0;
   double lfoVal = mLfo.getVal();
   Waveform paramWVal = TANH;
   SENDMESSAGES(0);
