@@ -121,6 +121,7 @@ SendControlMsgFromDelegate(kCtrlTagMixMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotMix, sizeof(double), &paramDVal);\
 paramDVal = GetParam(kClip##i) -> Value(); \
 lfoParamVal = std::max(-paramDVal,lfoVal * GetParam(kClipLfo##i)->Value());\
+paramDVal += lfoParamVal;\
 SendControlMsgFromDelegate(kCtrlTagClipMod##i, 0, sizeof(double), &lfoParamVal);\
 SendControlMsgFromDelegate(kCtrlTagPlot##i, kPlotClip, sizeof(double), &paramDVal); \
 
